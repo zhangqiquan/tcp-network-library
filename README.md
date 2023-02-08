@@ -1,39 +1,23 @@
-# tcp-network-library
+# 项目描述：
+该项目是一个多线程C++网络库，基于反应器模式。，采用非阻塞 IO 模型，基于时间驱动和回调，原生支持多核多线程，适合编写
+Linux 服务端多线程网络应用程序, 封装支持有 tcp 协议，http 协议，websocket 协议，以及 tcp 客户端，定时任务等。
 
-#### 介绍
-{**以下是 Gitee 平台说明，您可以替换此简介**
-Gitee 是 OSCHINA 推出的基于 Git 的代码托管平台（同时支持 SVN）。专为开发者提供稳定、高效、安全的云端软件开发协作平台
-无论是个人、团队、或是企业，都能够用 Gitee 实现代码托管、项目管理、协作开发。企业项目请看 [https://gitee.com/enterprises](https://gitee.com/enterprises)}
+# 要求：
 
-#### 软件架构
-软件架构说明
+Linux内核版本>=5
 
+BOOST库1.75以上
 
-#### 安装教程
+GCC、G++ >=11
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 使用说明
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
-
-
-#### 特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+# 功能概述：
+1. Reactor 主线程 MainReactor 对象通过 epoll 监听连接事件，收到事件后，通过 Acceptor 处理连接事件
+2. 当 Acceptor 接受连接事件后，MainReactor 将连接分配给 SubReactor
+3. SubReactor 将连接加入子 epoll 进行监听，并创建 Handler 进行各种事件处理
+4. 当有新事件发生时，SubReactor 就会调用对应的 Handler 处理 handler
+5. handler 通过 read 读取数据，进行分包和响应结果 send 处理
+6. 利用 epoll 管理所有的连接、定时器、tcp 客户端请求等文件描述符，全程非阻塞回调。
+7. 利用环形队列 boost/circular_buffer + 智能指针的方式 定时让智能指针脱离作用域而剔除超时不通讯的连接。
+8. 基于信号 捕获记录全部错误通过 addr2line 解析发生错误的具体内容和行数
+9. 封装了对 tcp 协议，http 协议的分包处理，websocket 协议规范的解码掩码等处理, 以及 hashmap 路由名称和类函数绑定的控
+   制器路由的支持

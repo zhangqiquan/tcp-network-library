@@ -1,0 +1,5 @@
+add_subdirectory(tcp)
+add_subdirectory(tcpClient)
+add_subdirectory(http)
+add_subdirectory(httpClient)
+add_subdirectory(websocket)
